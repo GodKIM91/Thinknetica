@@ -13,9 +13,9 @@ rt1 = Route.new(st1, st4)
 rt2 = Route.new(st2, st1)
 
 #добавляем в маршрут st1-st4 промежуточную станцию st3
-rt1.add_between_point(st3)
-#выводим маршрус
-puts "Маршрут rt1: #{rt1.route_points}"
+rt1.add_station(st3)
+#выводим маршрут
+puts "Маршрут rt1: #{rt1.stations}"
 #создаем поезда
 train_types = ['грузовой', 'пассажирский']
 tr1 = Train.new('GRUZ_ONE', train_types[0], 37)
@@ -33,7 +33,7 @@ tr3.attach_vagon
 puts tr3.vagons_count
 tr3.detach_vagon
 puts tr3.vagons_count
-tr3.break_speed
+tr3.stop
 tr3.attach_vagon
 puts tr3.vagons_count
 tr3.detach_vagon
@@ -55,5 +55,5 @@ puts "     На второй станции:"
 puts st2.trains
 puts "     На первой станции следующие грузовые поезда:"
 puts st1.trains_by_type(train_types[0])
-puts "     На второй станции следующие грузовые поезда:"
+puts "     На второй станции следующие пассажирские поезда:"
 puts st2.trains_by_type(train_types[1])

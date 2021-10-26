@@ -13,8 +13,13 @@ class Train
   end
   
   #останавливаем поезд, чтоб цеплять/отцеплять вагоны
-  def break_speed
+  def stop
     @speed = 0
+  end
+
+  #проверка поезда на нулевую скорость
+  def is_staying
+    speed == 0
   end
 
   def attach_vagon
@@ -40,24 +45,16 @@ class Train
   end
 
   def next_station
-    @route.route_points[next_station_index]
+    @route.stations[next_station_index]
   end
 
   def previous_station
-    @route.route_points[previous_station_index]
-  end
-
-  def to_s
-    "Поезд  №#{@number},#{type}\nОстановка: #{current_station}\n#{@route}"
-  end
-
-  def is_staying
-    speed == 0
+    @route.stations[previous_station_index]
   end
 
   def change_current_station(index)
     @current_station.depart_train(self) unless @current_station.eql?(nil)
-    @current_station = @route.route_points[index]
+    @current_station = @route.stations[index]
     @current_station.arrive_train(self)
     @current_station_index = index
   end
@@ -68,6 +65,10 @@ class Train
 
   def previous_station_index
     @current_station_index - 1
+  end
+
+  def to_s
+    "Поезд: #{@number}, тип: #{type}\nСейчас на станции: #{current_station}\nСледует по маршруту: #{@route}"
   end
 
 end
