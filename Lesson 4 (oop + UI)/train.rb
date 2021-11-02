@@ -1,11 +1,23 @@
+require_relative 'manufacturer'
+require_relative 'instance_counter'
+
 class Train
+  include Manufacturer
+  include InstanceCounter
   attr_reader :speed, :vagons, :current_station, :type, :number
+
+  @@trains = {}
+  def self.find(number)
+    @@trains[number]
+  end
 
   def initialize(number, type)
     @number = number.to_s
     @type = type
     @vagons = []
     @speed = 0
+    @@trains[number] = self
+    register_instance
   end
 
   def attach_vagon(vagon)

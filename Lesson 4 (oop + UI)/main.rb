@@ -18,7 +18,8 @@ ACTIONS = <<actions
 6 - Отцепить вагоны от поезда
 7 - Переместить поезд по маршруту вперед и назад
 8 - Просмостреть список станций и список поездов на станции
-9 - Выход
+9 - Debug
+10 - Выход
 actions
 
 TRAIN_TYPES = <<types
@@ -72,7 +73,8 @@ class Main
       when 6 then delete_vagons
       when 7 then move_train
       when 8 then stations_trains_info
-      when 9 then puts 'пока-пока'
+      when 9 then binding.irb
+      when 10 then puts 'пока-пока'
         break
       else
         puts 'Неверная команда'
