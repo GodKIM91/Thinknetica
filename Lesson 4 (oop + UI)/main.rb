@@ -77,15 +77,21 @@ class Main
       when 10 then puts 'пока-пока'
         break
       else
-        puts 'Неверная команда'
+        raise ArgumentError, 'Wrong command. Try 1-10'
       end
     end
+  rescue ArgumentError => e
+    p 'ERROR: ' + e.message
+    retry
   end
 
   def create_station
     puts 'Введите наименовании станции'
     stations << Station.new(user_input)
     p stations
+  rescue RuntimeError => e
+    p 'ERROR: ' + e.message
+    retry
   end
 
   def create_train
@@ -102,8 +108,14 @@ class Main
       trains << new_train
       puts "Создан пассажирский поезд с номером #{new_train.number}"
     else
-      puts 'Неверная команда'
+      raise ArgumentError, 'Wrong command. Try 1-2'
     end
+  rescue ArgumentError => e
+    p 'ERROR: ' + e.message
+    retry
+  rescue RuntimeError => e
+    p 'ERROR: ' + e.message
+    retry
   end
 
   def create_change_route
@@ -113,8 +125,11 @@ class Main
     when 2 then add_between_station
     when 3 then delete_station
     else 
-      puts 'Неверная команда'
+      raise ArgumentError, 'Wrong command. Try 1-3'
     end
+  rescue ArgumentError => e
+    p 'ERROR: ' + e.message
+    retry
   end
 
   def show_stations
@@ -210,6 +225,9 @@ class Main
       puts 'Для начала нужно создать поезд'
       create_train
     end
+  rescue RuntimeError => e
+    p 'ERROR: ' + e.message
+    retry
   end
 
   def delete_vagons
@@ -234,8 +252,14 @@ class Main
       vagons << PassengerVagon.new
       puts 'Создан пассажирский вагон'
     else
-      puts 'Неверная команда'
+      raise ArgumentError, 'Wrong command. Try 1-2'
     end
+  rescue ArgumentError => e
+    p 'ERROR: ' + e.message
+    retry
+  rescue RuntimeError => e
+    p 'ERROR: ' + e.message
+    retry
   end
 
   def move_train
@@ -247,8 +271,11 @@ class Main
     when 1 then train.move_forward
     when 2 then train.move_backward
     else
-      uts 'Неверная команда'
+      raise ArgumentError, 'Wrong command. Try 1-2'
     end
+  rescue ArgumentError => e
+    p 'ERROR: ' + e.message
+    retry
   end
 
   def stations_trains_info

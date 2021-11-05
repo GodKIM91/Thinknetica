@@ -1,7 +1,12 @@
 require_relative 'instance_counter'
+require_relative 'validation'
 
 class Station
   include InstanceCounter
+  include Validation
+
+  NAME_PATTERN = /^[a-z]{3,10}$/i #название станции - любое слово от 3 до 10 букв без чувствительности к регистру
+
   attr_reader :trains, :name
 
   @@stations = []
@@ -12,6 +17,7 @@ class Station
 
   def initialize(name)
     @name = name
+    validate!
     @trains = []
     @@stations << self
     register_instance
@@ -32,4 +38,10 @@ class Station
   def to_s
     "Остановка: #{name}"
   end
+
+  protected
+  def validate!
+    raise 'Wrong station name, try any chars with length 3..10' if @name !~ NAME_PATTERN
+  end
+
 end

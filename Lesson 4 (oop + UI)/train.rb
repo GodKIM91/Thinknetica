@@ -1,10 +1,15 @@
 require_relative 'manufacturer'
 require_relative 'instance_counter'
+require_relative 'validation'
 
 class Train
   include Manufacturer
   include InstanceCounter
+  include Validation
   attr_reader :speed, :vagons, :current_station, :type, :number
+
+  NUMBER_PATTERN = /^[a-zа-я\d]{3}-?[a-zа-я\d]{2}$/i
+  TYPE_PATTERN = /^cargo$|^passenger$/
 
   @@trains = {}
   def self.find(number)
@@ -12,8 +17,9 @@ class Train
   end
 
   def initialize(number, type)
-    @number = number.to_s
+    @number = number
     @type = type
+    validate!
     @vagons = []
     @speed = 0
     @@trains[number] = self
@@ -22,9 +28,13 @@ class Train
 
   def attach_vagon(vagon)
     if self.type == vagon.type
-      is_staying ? @vagons << vagon : puts('Нужно остановиться!')
+      if is_staying
+        @vagons << vagon
+      else
+        raise 'Нужно остановиться!'
+      end
     else 
-      puts "Нельзя прицепить к поезду с типом #{self.type} вагон с типом #{vagon.type}"
+      raise "Нельзя прицепить к поезду с типом #{self.type} вагон с типом #{vagon.type}"
     end
   end
 
@@ -57,9 +67,9 @@ class Train
     "Поезд: #{@number}, тип: #{type}\nСейчас на станции: #{current_station}\nСледует по маршруту: #{@route}"
   end
 
-  private
+  protected
 
-  #методы ниже приватные, поскольку вызываются только в контексте класса Train
+  #методы ниже protected, поскольку вызываются только в контексте класса Train
 
   def increase_speed(speed = 1)
     @speed += speed
@@ -89,6 +99,11 @@ class Train
 
   def previous_station_index
     @current_station_index - 1
+  end
+
+  def validate!
+    raise 'Wrong number format. Use xxx-xx or xxxxx' if @number !~ NUMBER_PATTERN
+    raise "Wrong type of train. Use 'cargo' or 'passenger'" if @type !~ TYPE_PATTERN
   end
 
 end
