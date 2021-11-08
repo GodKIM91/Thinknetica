@@ -11,6 +11,7 @@ class Vagon
 
   def initialize(type)
     @type = type
+    @number = Random.rand(100..999)
     validate!
   end
 

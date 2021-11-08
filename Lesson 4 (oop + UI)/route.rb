@@ -21,6 +21,6 @@ class Route
   end
 
   def to_s
-    "Маршрут: #{@stations.first.name} - #{@stations.last.name}"
+    "#{@stations.first.name} - #{@stations.last.name}"
   end
 end

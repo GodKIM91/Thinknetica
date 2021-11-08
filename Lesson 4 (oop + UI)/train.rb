@@ -63,8 +63,12 @@ class Train
     @current_station_index = index
   end
 
+  def each_vagon
+    vagons.each { |vagon| yield(vagon) }
+  end
+
   def to_s
-    "Поезд: #{@number}, тип: #{type}\nСейчас на станции: #{current_station}\nСледует по маршруту: #{@route}"
+    "Поезд: #{@number}, тип: #{type}, число вагонов: #{vagons.size}\nСейчас на станции: #{current_station}\nСледует по маршруту: #{@route}\n"
   end
 
   protected

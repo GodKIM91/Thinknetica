@@ -35,6 +35,10 @@ class Station
     trains.select { |train| train.type == type } 
   end
 
+  def each_train
+    trains.each { |train| yield(train) }
+  end
+
   def to_s
     "Остановка: #{name}"
   end

@@ -18,8 +18,10 @@ ACTIONS = <<actions
 6 - Отцепить вагоны от поезда
 7 - Переместить поезд по маршруту вперед и назад
 8 - Просмостреть список станций и список поездов на станции
-9 - Debug
-10 - Выход
+9 - Просмотреть информацию о вагонах поезда
+10 - Заполнить вагон
+11 - Debug
+12 - Выход
 actions
 
 TRAIN_TYPES = <<types
@@ -73,8 +75,10 @@ class Main
       when 6 then delete_vagons
       when 7 then move_train
       when 8 then stations_trains_info
-      when 9 then binding.irb
-      when 10 then puts 'пока-пока'
+      when 9 then show_vagons_info
+      when 10 then fill_vagon
+      when 11 then binding.irb
+      when 12 then puts 'пока-пока'
         break
       else
         raise ArgumentError, 'Wrong command. Try 1-10'
@@ -246,11 +250,23 @@ class Main
     puts 'Какой тип вагона Вы хотите создать?', VAGON_TYPES
     case selected_option
     when 1 then 
-      vagons << CargoVagon.new
-      puts 'Создан грузовой вагон'
+      puts 'Введите вместимость грузового вагона (50..150 куб.м)'
+      space_size = selected_option
+      if space_size >= 50 && space_size <= 150
+        vagons << CargoVagon.new(space_size)
+        puts "Создан грузовой вагон с объемом #{space_size}"
+      else 
+        raise ArgumentError, 'Wrong space of cargo vagon. Try 50..150'
+      end
     when 2 then
-      vagons << PassengerVagon.new
-      puts 'Создан пассажирский вагон'
+      puts 'Введите количество мест пассажирского вагона (60-90)'
+      places_qty = selected_option
+      if places_qty >= 60 && places_qty <= 90
+        vagons << PassengerVagon.new(places_qty)
+        puts "Создан пассажирский вагон. Чисто мест - #{places_qty}"
+      else 
+        raise ArgumentError, 'Wrong places q-ty for passenger vagon. Try 60-90'
+      end
     else
       raise ArgumentError, 'Wrong command. Try 1-2'
     end
@@ -260,6 +276,49 @@ class Main
   rescue RuntimeError => e
     p 'ERROR: ' + e.message
     retry
+  end
+
+  def fill_vagon
+    create_vagon if vagons.empty?
+    puts 'Выберете вагон для заполнения'
+    show_vagons
+    vagon = vagons[selected_option]
+    case vagon.type
+    when 'cargo'
+      puts "В грузовом вагоне свободно #{vagon.free_space} куб.м3. Какой объем займем?"
+      value = selected_option
+      if value <= vagon.free_space
+        vagon.reduce_space(value)
+        puts "Вагон загружен. Остаток свободного места #{vagon.free_space}"
+      else 
+        raise ArgumentError, 'В вагоне недостаточно места'
+      end
+    when 'passenger'
+      puts "В пассажирском вагоне свободно #{vagon.free_seats} мест. Добавлен 1 пассажир!"
+      if vagon.free_seats >= 1
+        vagon.book_seat
+        puts "Пассажир сел. Остаток свободных мест #{vagon.free_seats}"
+      else 
+        raise ArgumentError, 'В вагоне недостаточно мест'
+      end
+    end
+  rescue ArgumentError => e
+    p 'ERROR: ' + e.message
+    retry
+  end
+
+  def show_vagons_info
+    puts 'Список вагонов какого поезда Вы хотите увидеть?'
+    show_trains
+    train = trains[selected_option]
+    unless train.vagons.empty?
+      train.each_vagon { |vagon| puts vagon }
+    else 
+      raise RuntimeError, 'У этого поезда нет вагонов'
+    end
+  rescue RuntimeError => e
+    p 'ERROR: ' + e.message
+    go
   end
 
   def move_train
@@ -287,7 +346,7 @@ class Main
       puts 'На станции нет поездов'
     else
       puts "На станции #{station.name} следующие поезда:"
-      puts station.trains
+      station.each_train { |train| puts train }
     end
   end
 end
