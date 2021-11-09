@@ -251,19 +251,19 @@ class Main
     case selected_option
     when 1 then 
       puts 'Введите вместимость грузового вагона (50..150 куб.м)'
-      space_size = selected_option
-      if space_size >= 50 && space_size <= 150
-        vagons << CargoVagon.new(space_size)
-        puts "Создан грузовой вагон с объемом #{space_size}"
+      total_place = selected_option
+      if total_place >= 50 && total_place <= 150
+        vagons << CargoVagon.new(total_place)
+        puts "Создан грузовой вагон с объемом #{total_place}"
       else 
         raise ArgumentError, 'Wrong space of cargo vagon. Try 50..150'
       end
     when 2 then
       puts 'Введите количество мест пассажирского вагона (60-90)'
-      places_qty = selected_option
-      if places_qty >= 60 && places_qty <= 90
-        vagons << PassengerVagon.new(places_qty)
-        puts "Создан пассажирский вагон. Чисто мест - #{places_qty}"
+      total_place = selected_option
+      if total_place >= 60 && total_place <= 90
+        vagons << PassengerVagon.new(total_place)
+        puts "Создан пассажирский вагон. Чисто мест - #{total_place}"
       else 
         raise ArgumentError, 'Wrong places q-ty for passenger vagon. Try 60-90'
       end
@@ -285,19 +285,19 @@ class Main
     vagon = vagons[selected_option]
     case vagon.type
     when 'cargo'
-      puts "В грузовом вагоне свободно #{vagon.free_space} куб.м3. Какой объем займем?"
+      puts "В грузовом вагоне свободно #{vagon.free_place} куб.м3. Какой объем займем?"
       value = selected_option
-      if value <= vagon.free_space
-        vagon.reduce_space(value)
-        puts "Вагон загружен. Остаток свободного места #{vagon.free_space}"
+      if value <= vagon.free_place
+        vagon.reduce_place(value)
+        puts "Вагон загружен. Остаток свободного места #{vagon.free_place}"
       else 
         raise ArgumentError, 'В вагоне недостаточно места'
       end
     when 'passenger'
-      puts "В пассажирском вагоне свободно #{vagon.free_seats} мест. Добавлен 1 пассажир!"
-      if vagon.free_seats >= 1
+      puts "В пассажирском вагоне свободно #{vagon.free_place} мест. Добавлен 1 пассажир!"
+      if vagon.free_place >= 1
         vagon.book_seat
-        puts "Пассажир сел. Остаток свободных мест #{vagon.free_seats}"
+        puts "Пассажир сел. Остаток свободных мест #{vagon.free_place}"
       else 
         raise ArgumentError, 'В вагоне недостаточно мест'
       end
