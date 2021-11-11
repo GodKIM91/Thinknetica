@@ -4,10 +4,10 @@ require_relative 'validation'
 class Vagon
   include Manufacturer
   include Validation
-  
-  TYPE_PATTERN = /^cargo$|^passenger$/
 
-  attr_reader :type
+  TYPE_PATTERN = /^cargo$|^passenger$/.freeze
+
+  attr_reader :type, :used_place
 
   def initialize(type, total_place)
     @number = Random.rand(100..999)
@@ -15,10 +15,6 @@ class Vagon
     @total_place = total_place
     @used_place = 0
     validate!
-  end
-
-  def used_place
-    @used_place
   end
 
   def free_place
@@ -34,5 +30,4 @@ class Vagon
   def validate!
     raise 'Wrong vagon type' if @type !~ TYPE_PATTERN
   end
-  
 end

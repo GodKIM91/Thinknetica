@@ -5,7 +5,7 @@ class Station
   include InstanceCounter
   include Validation
 
-  NAME_PATTERN = /^[a-z]{3,10}$/i #название станции - любое слово от 3 до 10 букв без чувствительности к регистру
+  NAME_PATTERN = /^[a-z]{3,10}$/i.freeze
 
   attr_reader :trains, :name
 
@@ -32,11 +32,11 @@ class Station
   end
 
   def trains_by_type(type)
-    trains.select { |train| train.type == type } 
+    trains.select { |train| train.type == type }
   end
 
-  def each_train
-    trains.each { |train| yield(train) }
+  def each_train(&block)
+    trains.each(&block)
   end
 
   def to_s
@@ -44,8 +44,8 @@ class Station
   end
 
   protected
+
   def validate!
     raise 'Wrong station name, try any chars with length 3..10' if @name !~ NAME_PATTERN
   end
-
 end

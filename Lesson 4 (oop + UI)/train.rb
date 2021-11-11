@@ -8,8 +8,8 @@ class Train
   include Validation
   attr_reader :speed, :vagons, :current_station, :type, :number
 
-  NUMBER_PATTERN = /^[a-zа-я\d]{3}-?[a-zа-я\d]{2}$/i
-  TYPE_PATTERN = /^cargo$|^passenger$/
+  NUMBER_PATTERN = /^[a-zа-я\d]{3}-?[a-zа-я\d]{2}$/i.freeze
+  TYPE_PATTERN = /^cargo$|^passenger$/.freeze
 
   @@trains = {}
   def self.find(number)
@@ -27,22 +27,18 @@ class Train
   end
 
   def attach_vagon(vagon)
-    if self.type == vagon.type
-      if is_staying
-        @vagons << vagon
-      else
-        raise 'Нужно остановиться!'
-      end
-    else 
-      raise "Нельзя прицепить к поезду с типом #{self.type} вагон с типом #{vagon.type}"
+    if type == vagon.type
+      staying? ? @vagons << vagon : puts('Нужно остановиться!')
+    else
+      raise "Нельзя прицепить к поезду с типом #{type} вагон с типом #{vagon.type}"
     end
   end
 
   def detach_vagon
-    is_staying ? @vagons.delete_at(-1) : puts('Нужно остановиться!')
+    staying? ? @vagons.delete_at(-1) : puts('Нужно остановиться!')
   end
 
-  #ставим поезд на первую станцию при назначении маршрута
+  # ставим поезд на первую станцию при назначении маршрута
   def route=(route)
     @route = route
     change_current_station(0)
@@ -63,8 +59,8 @@ class Train
     @current_station_index = index
   end
 
-  def each_vagon
-    vagons.each { |vagon| yield(vagon) }
+  def each_vagon(&block)
+    vagons.each(&block)
   end
 
   def to_s
@@ -73,20 +69,20 @@ class Train
 
   protected
 
-  #методы ниже protected, поскольку вызываются только в контексте класса Train
+  # методы ниже protected, поскольку вызываются только в контексте класса Train
 
   def increase_speed(speed = 1)
     @speed += speed
   end
-  
-  #останавливаем поезд, чтоб цеплять/отцеплять вагоны
+
+  # останавливаем поезд, чтоб цеплять/отцеплять вагоны
   def stop
     @speed = 0
   end
 
-  #проверка поезда на нулевую скорость
-  def is_staying
-    speed == 0
+  # проверка поезда на нулевую скорость
+  def staying?
+    speed.zero?
   end
 
   def next_station
@@ -109,5 +105,4 @@ class Train
     raise 'Wrong number format. Use xxx-xx or xxxxx' if @number !~ NUMBER_PATTERN
     raise "Wrong type of train. Use 'cargo' or 'passenger'" if @type !~ TYPE_PATTERN
   end
-
 end

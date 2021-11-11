@@ -1,5 +1,5 @@
 module InstanceCounter
-  #немного переделал модуль, эта реализация кажется более читаемой
+  # немного переделал модуль, эта реализация кажется более читаемой
   def self.included(base)
     base.extend ClassMethods
     base.include InstanceMethods
@@ -17,7 +17,6 @@ module InstanceCounter
   end
 
   module InstanceMethods
-
     protected
 
     def register_instance
