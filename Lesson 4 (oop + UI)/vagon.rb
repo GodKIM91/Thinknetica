@@ -1,13 +1,18 @@
 require_relative 'manufacturer'
 require_relative 'validation'
+require_relative 'accessors'
 
 class Vagon
   include Manufacturer
   include Validation
+  include Acсessors
 
   TYPE_PATTERN = /^cargo$|^passenger$/.freeze
 
   attr_reader :type, :used_place
+  strong_attr_accessor :total_place, Integer
+
+  validate :type, :format, TYPE_PATTERN
 
   def initialize(type, total_place)
     @number = Random.rand(100..999)
@@ -23,11 +28,5 @@ class Vagon
 
   def to_s
     "Вагон #{@number}, тип #{@type}, мест(а) #{@total_place}, мест(а) занято #{used_place}, мест(а) свободно #{free_place}"
-  end
-
-  protected
-
-  def validate!
-    raise 'Wrong vagon type' if @type !~ TYPE_PATTERN
   end
 end

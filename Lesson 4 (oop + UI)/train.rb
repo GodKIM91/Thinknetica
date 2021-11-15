@@ -6,12 +6,18 @@ class Train
   include Manufacturer
   include InstanceCounter
   include Validation
-  attr_reader :speed, :vagons, :current_station, :type, :number
 
   NUMBER_PATTERN = /^[a-zа-я\d]{3}-?[a-zа-я\d]{2}$/i.freeze
   TYPE_PATTERN = /^cargo$|^passenger$/.freeze
 
+  attr_reader :speed, :vagons, :current_station, :type, :number
+
+  validate :number, :format, NUMBER_PATTERN
+  validate :type, :presence
+  validate :type, :format, TYPE_PATTERN
+
   @@trains = {}
+
   def self.find(number)
     @@trains[number]
   end
@@ -19,10 +25,10 @@ class Train
   def initialize(number, type)
     @number = number
     @type = type
-    validate!
     @vagons = []
     @speed = 0
     @@trains[number] = self
+    validate!
     register_instance
   end
 
@@ -101,8 +107,4 @@ class Train
     @current_station_index - 1
   end
 
-  def validate!
-    raise 'Wrong number format. Use xxx-xx or xxxxx' if @number !~ NUMBER_PATTERN
-    raise "Wrong type of train. Use 'cargo' or 'passenger'" if @type !~ TYPE_PATTERN
-  end
 end
