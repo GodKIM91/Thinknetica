@@ -11,6 +11,7 @@ puts 'Добрый вечер, Вы диспетчер! Выберете дей�
 
 ACTIONS = <<~ACTIONS
   Выберете действие:
+  0 - Test (диагностика на тестовых данных)
   1 - Создать станцию
   2 - Создать поезд
   3 - Создать маршрут и управлять станциями в нем (добавлять, удалять)
@@ -80,6 +81,7 @@ class Main
     loop do
       make_choise(ACTIONS)
       case selected_option
+      when 0 then test
       when 1 then create_station
       when 2 then create_train
       when 3 then create_change_route
@@ -349,6 +351,42 @@ class Main
       puts "На станции #{station.name} следующие поезда:"
       station.each_train { |train| puts train }
     end
+  end
+
+  def test
+    # метод для быстрой дигностики
+    def separator
+      "=" * 20
+    end
+    puts separator, tr1 = Train.new('123-12', 'cargo')
+    puts separator, tr2 = Train.new('abc-sa', 'passenger')
+    puts separator, tr3 = CargoTrain.new('123-21')
+    puts separator, tr4 = PassengerTrain.new('123-31')
+    puts separator, v1 = Vagon.new('cargo', 60)
+    puts separator, v2 = Vagon.new('passenger', 60)
+    puts separator, v3 = CargoVagon.new(60)
+    puts separator, v4 = PassengerVagon.new(60)
+    v3.reduce_place(10)
+    v4.book_seat
+    puts separator, v3.free_place
+    puts separator, v3.used_place
+    puts separator, v4.free_place
+    puts separator, v4.used_place
+    tr1.attach_vagon(v1)
+    tr2.attach_vagon(v2)
+    tr1.detach_vagon
+    tr2.detach_vagon
+    puts separator, st1 = Station.new('minsk')
+    puts separator, st2 = Station.new('moscow')
+    puts separator, st3 = Station.new('dmd')
+    puts separator, rt = Route.new(st1, st2)
+    puts separator, rt.add_station(st3)
+    tr1.route = rt
+    tr1.move_forward
+    tr1.move_backward
+    puts separator, rt.delete_station(st3)
+  rescue Exception => e
+    puts e.message
   end
 end
 

@@ -13,7 +13,12 @@ module Validation
 
   module InstanceMethods
     def validate!
-      self.class.instance_variable_get(:@validate).each do |hash|
+      exp = if self.class.superclass == Object
+            self.class.instance_variable_get(:@validate)
+            else
+            self.class.superclass.instance_variable_get(:@validate)
+            end
+      exp.each do |hash|
         name = hash[:name]
         value = instance_variable_get("@#{name}".to_sym)
         type = hash[:type]
